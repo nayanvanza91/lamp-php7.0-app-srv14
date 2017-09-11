@@ -30,6 +30,13 @@ RUN apt-get update && apt-get install -y vim \
     && cd /etc/apache2/conf-available \
     && printf "<Directory "/phpmyadmin">\nAllowOverride all\nRequire all granted\n</Directory>\nAlias /phpmyadmin /phpmyadmin" > phpmyadmin.conf \
     && a2enconf phpmyadmin.conf \
+    && cd /tmp/ \
+    && wget https://repo.percona.com/apt/percona-release_0.1-4.$(lsb_release -sc)_all.deb \
+    && dpkg -i percona-release_0.1-4.$(lsb_release -sc)_all.deb \
+    && apt-get -y update \
+    && echo "percona-server-server-5.6 percona-server-server/root_password password secret" | sudo debconf-set-selections \
+    && echo "percona-server-server-5.6 percona-server-server/root_password_again password secret" | sudo debconf-set-selections \
+    && apt-get -y install percona-server-server-5.6 percona-server-client-5.6 \
     && add-apt-repository ppa:ondrej/php \
     && apt-get update \
     && apt-get install -y libapache2-mod-php7.0 php7.0 php7.0-mysql \
